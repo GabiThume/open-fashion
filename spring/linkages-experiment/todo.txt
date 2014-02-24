@@ -1,0 +1,24 @@
+Model, rendering, and manipulation of 2D points with constraints
+  Move a point around
+  Create a constraint
+    Fixed distance between 2 points
+    Fixed angle between 2 points
+    # Fixed angle between 3 points
+    # Equal distance between 2 pairs of points
+
+
+
+
+
+Point on line
+Point on circle (done)
+
+
+
+
+"Derived" points
+  midpoint
+  intersection
+  point on line (removes 1 degree)
+  point on circle (removes 1 degree)
+    should it control the radius of the circle?
