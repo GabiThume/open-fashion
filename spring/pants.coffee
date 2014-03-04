@@ -1,51 +1,72 @@
-outseam = 103
+class Measurements
+  outseam: 115
+  inseam: 88
+  waistC: 91
+  buttC: 102
+  thighC: 95
+  kneeC: 54
+  ankleC: 35
+  backMid: 41
+  frontMid: 31
+  outseamPoints: []
+  apply: ->
+    for p in @outseamPoints
+      console.log(p)
+      p.y = (@outseam+startY)*4
+
+measures = new Measurements
+
+outseam = 115
 inseam = 88
 waistC = 91
 buttC = 102
-thighC = 61
-kneeC = 44
-ankleC = 30
+thighC = 95
+kneeC = 54
+ankleC = 35
 backMid = 41
 frontMid = 31
 
-startY = 50
+startY = 25
 startX = 25
 
 refPointsFrontR = {
   A: [startX, startY],
-  B: [startX-3, 58],
-  C: [startX-2, 72],
-  D: [startX+1, 85],
-  E: [startX+5, 110],
-  F: [startX+10, outseam+startY],
-  G: [startX+30, 52],
-  H: [startX+31, 60],
-  I: [startX+32, 70],
-  J: [startX+35, 78],
-  K: [startX+34, 110],
-  L: [startX+30, outseam+startY]
+  B: [startX-2, measures.outseam*0.3],
+  C: [startX-1, measures.outseam*0.4],
+  D: [startX+5, measures.outseam*0.5],
+  E: [startX+10, measures.outseam*0.8],
+  F: [startX+15, measures.outseam+startY],
+
+  L: [startX+waistC/2, startY+3],
+  K: [startX-4+buttC/2, measures.outseam*0.35],
+  J: [startX-3+buttC/2, measures.outseam*0.42],
+  I: [startX+5+thighC/2, measures.outseam*0.5],
+  H: [startX+10+kneeC/2, measures.outseam*0.8],
+  G: [startX+15+ankleC/2, measures.outseam+startY]
 }
 
-startX = 150
+startX = 160
 
 refPointsBackR = {
-  A: [startX, refPointsFrontR['A'][1]],
-  B: [startX-3, 58],
-  C: [startX-2, 72],
-  D: [startX+1, 85],
-  E: [startX+5, 110],
-  F: [startX+10, outseam+startY],
-  G: [startX+30, 52],
-  H: [startX+31, 60],
-  I: [startX+35, 70],
-  J: [startX+39, refPointsFrontR['J'][1]],
-  K: [startX+34, 110],
-  L: [startX+30, outseam+startY]
+  A: [startX, startY],
+  B: [startX-2, measures.outseam*0.3],
+  C: [startX-1, measures.outseam*0.4],
+  D: [startX+5, measures.outseam*0.5],
+  E: [startX+10, measures.outseam*0.8],
+  F: [startX+15, measures.outseam+startY],
+
+  L: [startX+waistC/2, startY+3],
+  K: [startX-5+buttC/2, measures.outseam*0.35],
+  J: [startX-4+buttC/2, measures.outseam*0.42],
+  I: [startX+6+thighC/2, measures.outseam*0.5],
+  H: [startX+12+kneeC/2, measures.outseam*0.8],
+  G: [startX+18+ankleC/2, measures.outseam+startY]
 }
 
-lineRef = 50
+lineRef = 60
 
-letters = ['F', 'E', 'D', 'C', 'B', 'A', 'G', 'H', 'I', 'J', 'K', 'L']
+letters = ['F', 'E', 'D', 'C', 'B', 'A', 'L', 'K', 'J', 'I', 'H', 'G']
+
 
 # =============================================================================
 
@@ -53,10 +74,19 @@ setupModelFrontR = ->
 
   coords = (refPointsFrontR[letter] for letter in letters)
 
-  # Add points
-  for coord in coords
+  for letter in letters
+    coord = refPointsFrontR[letter]
     p = new Point(coord[0]*4, coord[1]*4)
     model.points.push(p)
+    if (letter == 'F' or letter == 'G')
+      console.log(p)
+      measures.outseamPoints.push(p)
+
+  # Add points
+  # for coord in coords
+  #   p = new Point(coord[0]*4, coord[1]*4)
+  #   model.points.push(p)
+  #   measures.outseamPoints.push(p)
 
   # Add distance constraints
   # for i in [0...model.points.length-1]
@@ -89,7 +119,6 @@ setupModelFrontR = ->
   #constraint = new AngleConstraint(p1, p2, angle)
   #model.constraints.push(constraint)
 
-  render()
 
 # =============================================================================
 
@@ -101,7 +130,6 @@ setupModelFrontL = ->
     p = new Point((2*lineRef-coord[0])*4+200, coord[1]*4)
     model.points.push(p)
 
-  render()
 
 # =============================================================================
 
@@ -114,7 +142,6 @@ setupModelBackR = ->
     p = new Point(coord[0]*4, coord[1]*4)
     model.points.push(p)
 
-  render()
 
 # =============================================================================
 
@@ -122,13 +149,11 @@ setupModelBackL = ->
 
   coords = (refPointsBackR[letter] for letter in letters)
 
-  lineRef = 200
+  lineRef = 220
   # Add points
   for coord in coords
     p = new Point((2*lineRef-coord[0])*4, coord[1]*4)
     model.points.push(p)
-
-  render()
 
 # =============================================================================
 # Set up canvas
@@ -148,12 +173,26 @@ init = ->
   canvasEl.addEventListener("pointerdown", pointerDown)
   canvasEl.addEventListener("pointermove", pointerMove)
   canvasEl.addEventListener("pointerup", pointerUp)
-  setupModelFrontL()
   setupModelFrontR()
+  setupModelFrontL()
   setupModelBackR()
   setupModelBackL()
   resize()
   idleLoop()
+  gui = new dat.GUI()
+  gui.add(measures, 'outseam', 0, 200)
+  gui.add(measures, 'inseam', 0, 200)
+  gui.add(measures, 'waistC', 0, 200)
+  gui.add(measures, 'buttC', 0, 200)
+  gui.add(measures, 'thighC', 0, 200)
+  gui.add(measures, 'kneeC', 0, 200)
+  gui.add(measures, 'ankleC', 0, 200)
+  gui.add(measures, 'backMid', 0, 200)
+  gui.add(measures, 'frontMid', 0, 200)
+  gui.__controllers[0].onChange( (value) ->
+    measures.apply()
+  )
+  render()
 
 idleLoop = ->
   idle()
@@ -279,7 +318,7 @@ drawLine = (p1, p2, color = "#000") ->
   ctx.beginPath()
   ctx.moveTo(p1.x, p1.y)
   ctx.lineTo(p2.x, p2.y)
-  ctx.lineWidth = 1
+  ctx.lineWidth = 2
   ctx.strokeStyle = color
   ctx.stroke()
 
@@ -293,6 +332,12 @@ render = ->
     drawPoint(point, color)
     if point.fixed
       drawCircle(point, 5, color)
+
+  for i in [0...model.points.length-1]
+    p1 = model.points[i]
+    p2 = model.points[i+1]
+    drawLine(p1, p2, "#000")
+    console.log(p1.x, p1.y, p2.x, p2.y)
 
   for constraint in model.constraints
     if constraint instanceof DistanceConstraint

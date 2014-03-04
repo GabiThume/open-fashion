@@ -31,32 +31,7 @@ canvas {
 </head>
 <body>
 
-<div id="instructions">
-# measurements <br>
-outseam = 103
-inseam = 88
-waistC = 91
-buttC = 102
-thighC = 61
-kneeC = 44
-ankleC = 30
-backMid = 41
-frontMid = 31
-<br><br>
-# distances <br>
-ABCDEF = MNOPQR = outseam
-GHI = STI = inseam
-UVWI = frontMid
-IJKL = backMid
-AUMLA = waistC
-CVOKC = buttC
-<br><br>
-# these would need more points, since ID != DI <br>
-DID = PIP = thighC
-EHE = QTQ = kneeC
-FGF = RSR = ankleC
-<br>
-  <!--
+<div id="instructions">  <!--
   Touch to create a point.<br>
   Drag to move points.<br>
   D to constrain distance between last two touched points.<br>
@@ -73,8 +48,9 @@ FGF = RSR = ankleC
 <script src="linkages-experiment/vendor/pointerevents.min.js"></script>
 <script src="linkages-experiment/vendor/keymaster.js"></script>
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
+<script type="text/javascript" src="coffee-script.min.js"></script>
 
+<script type="text/javascript" src="dat.gui.js"></script>
 <script type="text/coffeescript" src="pants.coffee"></script>
 
 </body>
